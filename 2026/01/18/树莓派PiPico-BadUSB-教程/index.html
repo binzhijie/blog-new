@@ -1,229 +1,165 @@
-<!DOCTYPE html>
-<html lang="zh_cn">
+<!DOCTYPE html><html lang="zh_cn" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>树莓派PiPico BadUSB 教程 | Zhijie's Blog</title><meta name="author" content="ZhijieBin"><meta name="copyright" content="ZhijieBin"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="树莓派PiPico BadUSB 教程安装 CircuitPython for Pi Pico过程省略 添加adafruit_hid库到Lib文件夹过程省略 核心模块说明   模块 用途    usb_hid.devices 获取已连接的 HID 设备列表（通常只有 1 个）   adafruit_hid.keyboard.Keyboard 模拟键盘按键   adafruit_hid.keycod">
+<meta property="og:type" content="article">
+<meta property="og:title" content="树莓派PiPico BadUSB 教程">
+<meta property="og:url" content="https://blog.zhijiebin.top/2026/01/18/%E6%A0%91%E8%8E%93%E6%B4%BEPiPico-BadUSB-%E6%95%99%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Zhijie&#39;s Blog">
+<meta property="og:description" content="树莓派PiPico BadUSB 教程安装 CircuitPython for Pi Pico过程省略 添加adafruit_hid库到Lib文件夹过程省略 核心模块说明   模块 用途    usb_hid.devices 获取已连接的 HID 设备列表（通常只有 1 个）   adafruit_hid.keyboard.Keyboard 模拟键盘按键   adafruit_hid.keycod">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog.zhijiebin.top/img/butterfly-icon.png">
+<meta property="article:published_time" content="2026-01-18T03:05:38.000Z">
+<meta property="article:modified_time" content="2026-01-18T03:07:16.183Z">
+<meta property="article:author" content="ZhijieBin">
+<meta property="article:tag" content="PiPico">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog.zhijiebin.top/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "树莓派PiPico BadUSB 教程",
+  "url": "https://blog.zhijiebin.top/2026/01/18/%E6%A0%91%E8%8E%93%E6%B4%BEPiPico-BadUSB-%E6%95%99%E7%A8%8B/",
+  "image": "https://blog.zhijiebin.top/img/butterfly-icon.png",
+  "datePublished": "2026-01-18T03:05:38.000Z",
+  "dateModified": "2026-01-18T03:07:16.183Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "ZhijieBin",
+      "url": "https://blog.zhijiebin.top"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://blog.zhijiebin.top/2026/01/18/%E6%A0%91%E8%8E%93%E6%B4%BEPiPico-BadUSB-%E6%95%99%E7%A8%8B/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
 
-<head>
-    <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
 
-    <meta name="author" content="ZhijieBin">
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
 
-
-    <meta name="subtitle" content="Hello world">
-
-
-
-
-<title>树莓派PiPico BadUSB 教程 | Zhijie&#39;s Blog</title>
-
-
-
-    <link rel="icon" href="/favicon.ico">
-
-
-
-
-    <!-- stylesheets list from _config.yml -->
+      const theme = saveToLocal.get('theme')
     
-    <link rel="stylesheet" href="/css/style.css">
-    
-
-
-
-    <!-- scripts list from _config.yml -->
-    
-    <script src="/js/script.js"></script>
-    
-    <script src="/js/tocbot.min.js"></script>
-    
-
-
-
-    
-    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
         
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
     
-
-
-<meta name="generator" content="Hexo 8.1.1"></head>
-
-<body>
-    <script>
-        // this function is used to check current theme before page loaded.
-        (() => {
-            const pagebody = document.getElementsByTagName('body')[0]
-
-            function setTheme(status) {
-
-                if (status === 'dark') {
-                    window.sessionStorage.theme = 'dark'
-                    pagebody.classList.add('dark-theme');
-
-                } else if (status === 'light') {
-                    window.sessionStorage.theme = 'light'
-                    pagebody.classList.remove('dark-theme');
-                }
-            };
-
-            setTheme(window.sessionStorage.theme)
-        })();
-    </script>
-
-    <div class="wrapper">
-        <header>
-    <nav class="navbar">
-        <div class="container">
-            <div class="navbar-header header-logo"><a href="/">Zhijie&#39;s Blog</a></div>
-            <div class="menu navbar-right">
-                
-                <a class="menu-item" href="/archives">Posts</a>
-                
-                <a class="menu-item" href="/categories">Categories</a>
-                
-                <a class="menu-item" href="/tags">Tags</a>
-                
-                <a class="menu-item" href="/about">About</a>
-                
-                
-                <input id="switch_default" type="checkbox" class="switch_default">
-                <label for="switch_default" class="toggleBtn"></label>
-            </div>
-        </div>
-    </nav>
-
-    
-    <nav class="navbar-mobile" id="nav-mobile">
-        <div class="container">
-            <div class="navbar-header">
-                <div>
-                    <a href="/">Zhijie&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
-                </div>
-                <div class="menu-toggle" onclick="mobileBtn()">
-                    <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M4.5 17.27q-.213 0-.356-.145T4 16.768t.144-.356t.356-.143h15q.213 0 .356.144q.144.144.144.357t-.144.356t-.356.143zm0-4.77q-.213 0-.356-.144T4 11.999t.144-.356t.356-.143h15q.213 0 .356.144t.144.357t-.144.356t-.356.143zm0-4.77q-.213 0-.356-.143Q4 7.443 4 7.23t.144-.356t.356-.143h15q.213 0 .356.144T20 7.23t-.144.356t-.356.144z"/></svg>
-                    <svg class="close-icon" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols Light by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="m12 12.708l-5.246 5.246q-.14.14-.344.15t-.364-.15t-.16-.354t.16-.354L11.292 12L6.046 6.754q-.14-.14-.15-.344t.15-.364t.354-.16t.354.16L12 11.292l5.246-5.246q.14-.14.345-.15q.203-.01.363.15t.16.354t-.16.354L12.708 12l5.246 5.246q.14.14.15.345q.01.203-.15.363t-.354.16t-.354-.16z"/></svg>
-                </div>
-            </div>
-            <div class="menu" id="mobile-menu">
-                
-                <a class="menu-item" href="/archives">Posts</a>
-                
-                <a class="menu-item" href="/categories">Categories</a>
-                
-                <a class="menu-item" href="/tags">Tags</a>
-                
-                <a class="menu-item" href="/about">About</a>
-                
-            </div>
-        </div>
-    </nav>
-
-</header>
-<script>
-    var mobileBtn = function f() {
-        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
-        var mobileMenu = document.getElementById("mobile-menu");
-        if (toggleMenu.classList.contains("active")) {
-            toggleMenu.classList.remove("active")
-            mobileMenu.classList.remove("active")
-        } else {
-            toggleMenu.classList.add("active")
-            mobileMenu.classList.add("active")
-        }
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
     }
-</script>
-            <div class="main">
-                <div class="container">
-    
-    
-        <div class="post-toc">
-    <div class="tocbot-list">
-    </div>
-    <div class="tocbot-list-menu">
-        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
-        <a onclick="go_top()">Back to top</a>
-        <a onclick="go_bottom()">Go to bottom</a>
-    </div>
-</div>
-
-<script>
-    var tocbot_timer;
-    var DEPTH_MAX = 6; // 为 6 时展开所有
-    var tocbot_default_config = {
-        tocSelector: '.tocbot-list',
-        contentSelector: '.post-content',
-        headingSelector: 'h1, h2, h3, h4, h5',
-        orderedList: false,
-        scrollSmooth: true,
-        onClick: extend_click,
-    };
-
-    function extend_click() {
-        clearTimeout(tocbot_timer);
-        tocbot_timer = setTimeout(function() {
-            tocbot.refresh(obj_merge(tocbot_default_config, {
-                hasInnerContainers: true
-            }));
-        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
-    }
-
-    document.ready(function() {
-        tocbot.init(obj_merge(tocbot_default_config, {
-            collapseDepth: 1
-        }));
-    });
-
-    function expand_toc() {
-        var b = document.querySelector('.tocbot-toc-expand');
-        var expanded = b.getAttribute('data-expanded');
-        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
-        tocbot.refresh(obj_merge(tocbot_default_config, {
-            collapseDepth: expanded ? 1 : DEPTH_MAX
-        }));
-        b.innerText = expanded ? 'Expand all' : 'Collapse all';
-    }
-
-    function go_top() {
-        window.scrollTo(0, 0);
-    }
-
-    function go_bottom() {
-        window.scrollTo(0, document.body.scrollHeight);
-    }
-
-    function obj_merge(target, source) {
-        for (var item in source) {
-            if (source.hasOwnProperty(item)) {
-                target[item] = source[item];
-            }
-        }
-        return target;
-    }
-</script>
-    
-
-    
-    <article class="post-wrap">
-        <header class="post-header">
-            <h1 class="post-title">树莓派PiPico BadUSB 教程</h1>
-            
-                <div class="post-meta">
-                    
-                        Author: <a itemprop="author" rel="author" href="/">ZhijieBin</a>
-                    
-
-                    
-                        <span class="post-time">
-                        Date: <a href="#">一月 18, 2026&nbsp;&nbsp;11:05:38</a>
-                        </span>
-                    
-                    
-                </div>
-            
-        </header>
-
-        <div class="post-content">
-            <h1 id="树莓派PiPico-BadUSB-教程"><a href="#树莓派PiPico-BadUSB-教程" class="headerlink" title="树莓派PiPico BadUSB 教程"></a>树莓派PiPico BadUSB 教程</h1><h2 id="安装-CircuitPython-for-Pi-Pico"><a href="#安装-CircuitPython-for-Pi-Pico" class="headerlink" title="安装 CircuitPython for Pi Pico"></a>安装 <strong>CircuitPython for Pi Pico</strong></h2><p>过程省略</p>
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '树莓派PiPico BadUSB 教程',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Zhijie's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">树莓派PiPico BadUSB 教程</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">树莓派PiPico BadUSB 教程</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2026-01-18T03:05:38.000Z" title="Created 2026-01-18 11:05:38">2026-01-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2026-01-18T03:07:16.183Z" title="Updated 2026-01-18 11:07:16">2026-01-18</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post Views:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="树莓派PiPico-BadUSB-教程"><a href="#树莓派PiPico-BadUSB-教程" class="headerlink" title="树莓派PiPico BadUSB 教程"></a>树莓派PiPico BadUSB 教程</h1><h2 id="安装-CircuitPython-for-Pi-Pico"><a href="#安装-CircuitPython-for-Pi-Pico" class="headerlink" title="安装 CircuitPython for Pi Pico"></a>安装 <strong>CircuitPython for Pi Pico</strong></h2><p>过程省略</p>
 <h2 id="添加adafruit-hid库到Lib文件夹"><a href="#添加adafruit-hid库到Lib文件夹" class="headerlink" title="添加adafruit_hid库到Lib文件夹"></a>添加adafruit_hid库到Lib文件夹</h2><p>过程省略</p>
 <h2 id="核心模块说明"><a href="#核心模块说明" class="headerlink" title="核心模块说明"></a>核心模块说明</h2><table>
 <thead>
@@ -271,76 +207,4 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># === 主程序 ===</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;程序启动！&quot;</span>)</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> wait_with_abort(<span class="number">2</span>, emergency_stop):</span><br><span class="line">    <span class="comment"># 用户在 2 秒内短接了 GP1 → 安全退出</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;已安全退出，未执行任何操作。&quot;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="comment"># 超时未停止 → 执行自动化</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;开始执行自动化任务...&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        main()</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;✅ 任务完成！&quot;</span>)</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;❌ 执行出错:&quot;</span>, e)</span><br></pre></td></tr></table></figure>
 
 <h2 id="演示代码"><a href="#演示代码" class="headerlink" title="演示代码"></a>演示代码</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># code.py - 带紧急停止的自动化脚本</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> usb_hid</span><br><span class="line"><span class="keyword">import</span> digitalio</span><br><span class="line"><span class="keyword">import</span> board</span><br><span class="line"><span class="keyword">from</span> adafruit_hid.keyboard <span class="keyword">import</span> Keyboard</span><br><span class="line"><span class="keyword">from</span> adafruit_hid.keycode <span class="keyword">import</span> Keycode</span><br><span class="line"><span class="keyword">from</span> adafruit_hid.keyboard_layout_us <span class="keyword">import</span> KeyboardLayoutUS</span><br><span class="line"></span><br><span class="line"><span class="comment"># === 配置紧急停止引脚（使用 GP1）===</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 用杜邦线将 GP1 短接到 GND 表示“停止”</span></span><br><span class="line"></span><br><span class="line">emergency_stop = digitalio.DigitalInOut(board.GP1)</span><br><span class="line">emergency_stop.direction = digitalio.Direction.INPUT</span><br><span class="line">emergency_stop.pull = digitalio.Pull.UP  <span class="comment"># 上拉：未短接时为 True，短接 GND 时为 False</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">wait_with_abort</span>(<span class="params">seconds, abort_pin</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;倒计时，期间检测是否触发紧急停止&quot;&quot;&quot;</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;倒计时 <span class="subst">&#123;seconds&#125;</span> 秒... (短接 GP1 到 GND 可取消)&quot;</span>)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(seconds, <span class="number">0</span>, -<span class="number">1</span>):</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> abort_pin.value:  <span class="comment"># 检测到短接（低电平）</span></span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;⚠️ 检测到紧急停止！程序终止。&quot;</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span>  <span class="comment"># 中止</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;i&#125;</span>...&quot;</span>)</span><br><span class="line">        time.sleep(<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span>  <span class="comment"># 正常完成</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># === 主程序函数 ===</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    keyboard = Keyboard(usb_hid.devices)</span><br><span class="line">    layout = KeyboardLayoutUS(keyboard)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># keyboard.send(Keycode.CAPS_LOCK)</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 示例：打开记事本并输入文本（完全可见、无害）</span></span><br><span class="line">    keyboard.send(Keycode.GUI, Keycode.R)</span><br><span class="line">    time.sleep(<span class="number">0.3</span>)</span><br><span class="line">    layout.write(<span class="string">&quot;notepad\n&quot;</span>)</span><br><span class="line">    time.sleep(<span class="number">1</span>)</span><br><span class="line">    layout.write(<span class="string">&quot;This is a safe demo from Raspberry Pi Pico!\n&quot;</span>)</span><br><span class="line">    layout.write(<span class="string">&quot;Time: &quot;</span> + <span class="built_in">str</span>(time.monotonic()) + <span class="string">&quot;\n&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># keyboard.send(Keycode.CAPS_LOCK)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># === 主程序 ===</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;程序启动！&quot;</span>)</span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> wait_with_abort(<span class="number">2</span>, emergency_stop):</span><br><span class="line">    <span class="comment"># 用户在 2 秒内短接了 GP1 → 安全退出</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;已安全退出，未执行任何操作。&quot;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="comment"># 超时未停止 → 执行自动化</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;开始执行自动化任务...&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        main()</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;✅ 任务完成！&quot;</span>)</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;❌ 执行出错:&quot;</span>, e)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;程序结束。&quot;</span>)</span><br></pre></td></tr></table></figure>
-
-        </div>
-
-        
-            <section class="post-copyright">
-                
-                    <p class="copyright-item">
-                        <span>Author:</span>
-                        <span>ZhijieBin</span>
-                    </p>
-                
-                
-                    <p class="copyright-item">
-                        <span>Permalink:</span>
-                        <span><a href="https://blog.zhijiebin.top/2026/01/18/%E6%A0%91%E8%8E%93%E6%B4%BEPiPico-BadUSB-%E6%95%99%E7%A8%8B/">https://blog.zhijiebin.top/2026/01/18/%E6%A0%91%E8%8E%93%E6%B4%BEPiPico-BadUSB-%E6%95%99%E7%A8%8B/</a></span>
-                    </p>
-                
-                
-                    <p class="copyright-item">
-                        <span>License:</span>
-                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
-                    </p>
-                
-                
-                     <p class="copyright-item">
-                         <span>Slogan:</span>
-                         <span>Do you believe in <strong>DESTINY</strong>?</span>
-                     </p>
-                
-
-            </section>
-        
-        <section class="post-tags">
-            <div>
-                <span>Tag(s):</span>
-                <span class="tag">
-                    
-                    
-                        <a href="/tags/PiPico/"># PiPico</a>
-                    
-                        
-                </span>
-            </div>
-            <div>
-                <a href="javascript:window.history.back();">back</a>
-                <span>· </span>
-                <a href="/">home</a>
-            </div>
-        </section>
-        <section class="post-nav">
-            
-                <a class="prev" rel="prev" href="/2026/02/25/%E7%BD%91%E7%AB%99%E6%88%90%E5%8A%9F%E9%83%A8%E7%BD%B2%E5%88%B0vercel%EF%BC%81/">网站成功部署到vercel！</a>
-            
-            
-            <a class="next" rel="next" href="/2026/01/01/%E5%9F%9F%E5%90%8D%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84%E7%A7%91%E6%99%AE/">域名的基本结构科普</a>
-            
-        </section>
-
-
-    </article>
-</div>
-
-            </div>
-            <footer id="footer" class="footer">
-    <div class="copyright">
-        <span>© ZhijieBin | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
-    </div>
-</footer>
-
-    </div>
-</body>
-
-</html>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>Author: </span><span class="post-copyright-info"><a href="https://blog.zhijiebin.top">ZhijieBin</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>Link: </span><span class="post-copyright-info"><a href="https://blog.zhijiebin.top/2026/01/18/%E6%A0%91%E8%8E%93%E6%B4%BEPiPico-BadUSB-%E6%95%99%E7%A8%8B/">https://blog.zhijiebin.top/2026/01/18/%E6%A0%91%E8%8E%93%E6%B4%BEPiPico-BadUSB-%E6%95%99%E7%A8%8B/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>Copyright Notice: </span><span class="post-copyright-info">All articles on this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless otherwise stated.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/PiPico/">PiPico</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/02/25/%E7%BD%91%E7%AB%99%E6%88%90%E5%8A%9F%E9%83%A8%E7%BD%B2%E5%88%B0vercel%EF%BC%81/" title="网站成功部署到vercel！"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">Previous</div><div class="info-item-2">网站成功部署到vercel！</div></div><div class="info-2"><div class="info-item-1">祝贺！</div></div></div></a><a class="pagination-related" href="/2026/01/01/%E5%9F%9F%E5%90%8D%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84%E7%A7%91%E6%99%AE/" title="域名的基本结构科普"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">域名的基本结构科普</div></div><div class="info-2"><div class="info-item-1">一、域名的基本结构域名采用从右到左逐级细分的层次结构，每一级用点（.）分隔。例如： 1www.blog.example.com  从右往左看，层级如下：  .com —— 顶级域名（TLD） example —— 二级域名 blog —— 三级域名（子域名） www —— 四级域名（更细的子域名）   注意：在日常交流中，“一级域名”通常指的是“完整注册的主域名”，比如 example.com，而不是仅 .com。这容易造成术语混淆，所以更推荐使用“顶级域名、二级域名”等标准术语。   二、各层级的定义1. 顶级域名（Top-Level Domain, TLD） 位于最右边，是域名系统的最高层级。 分为两类： 通用顶级域（gTLD）：如 .com、.net、.org、.xyz 等； 国家代码顶级域（ccTLD）：如 .cn（中国）、.uk（英国）、.jp（日本）等。   由 ICANN（互联网名称与数字地址分配机构）统一管理。   例如：在 example.com 中，.com 就是顶级域名 。   2. 二级域名（Second-Level Domain, SLD） 位于顶级域名...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">ZhijieBin</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%91%E8%8E%93%E6%B4%BEPiPico-BadUSB-%E6%95%99%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">树莓派PiPico BadUSB 教程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-CircuitPython-for-Pi-Pico"><span class="toc-number">1.1.</span> <span class="toc-text">安装 CircuitPython for Pi Pico</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0adafruit-hid%E5%BA%93%E5%88%B0Lib%E6%96%87%E4%BB%B6%E5%A4%B9"><span class="toc-number">1.2.</span> <span class="toc-text">添加adafruit_hid库到Lib文件夹</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97%E8%AF%B4%E6%98%8E"><span class="toc-number">1.3.</span> <span class="toc-text">核心模块说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E6%93%8D%E4%BD%9C"><span class="toc-number">1.4.</span> <span class="toc-text">具体操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E6%8B%9F%E9%94%AE%E7%9B%98"><span class="toc-number">1.4.1.</span> <span class="toc-text">模拟键盘</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BC%94%E7%A4%BA%E4%BB%A3%E7%A0%81"><span class="toc-number">1.5.</span> <span class="toc-text">演示代码</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/02/25/%E7%BD%91%E7%AB%99%E6%88%90%E5%8A%9F%E9%83%A8%E7%BD%B2%E5%88%B0vercel%EF%BC%81/" title="网站成功部署到vercel！">网站成功部署到vercel！</a><time datetime="2026-02-25T05:38:58.000Z" title="Created 2026-02-25 13:38:58">2026-02-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/18/%E6%A0%91%E8%8E%93%E6%B4%BEPiPico-BadUSB-%E6%95%99%E7%A8%8B/" title="树莓派PiPico BadUSB 教程">树莓派PiPico BadUSB 教程</a><time datetime="2026-01-18T03:05:38.000Z" title="Created 2026-01-18 11:05:38">2026-01-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/01/01/%E5%9F%9F%E5%90%8D%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84%E7%A7%91%E6%99%AE/" title="域名的基本结构科普">域名的基本结构科普</a><time datetime="2026-01-01T03:50:13.000Z" title="Created 2026-01-01 11:50:13">2026-01-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/12/27/Scoop-%E5%AE%89%E8%A3%85%E8%B7%AF%E5%BE%84%E4%BF%AE%E6%94%B9%E6%96%B9%E6%B3%95/" title="Scoop 安装路径修改方法">Scoop 安装路径修改方法</a><time datetime="2025-12-27T05:32:19.000Z" title="Created 2025-12-27 13:32:19">2025-12-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/09/14/CEAD%20%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E8%BD%AF%E4%BB%B6/" title="软件推荐——CEAD加密软件">软件推荐——CEAD加密软件</a><time datetime="2025-09-14T08:34:00.000Z" title="Created 2025-09-14 16:34:00">2025-09-14</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By ZhijieBin</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
